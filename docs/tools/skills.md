@@ -744,7 +744,11 @@ prompt. The cost is deterministic and scales linearly per skill:
 
 If the rendered block would exceed the configured prompt budget
 (`skills.limits.maxSkillsPromptChars`), OpenClaw first preserves as many skill
+<<<<<<< HEAD
 identities (name, location, and version) as the description-free compact format
+=======
+identities (name and location) as the description-free compact format
+>>>>>>> upstream/main
 can fit. It then uses any remaining budget for shortened descriptions. If no
 description budget remains, descriptions are omitted. The prompt includes a
 note pointing at `openclaw skills check` whenever compact formatting or list
