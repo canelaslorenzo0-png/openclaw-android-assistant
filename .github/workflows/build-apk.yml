@@ -48,18 +48,25 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
+      - name: Generate release keystore
+        run: |
+          keytool -genkeypair -v -keystore android/release.keystore \
+            -storepass anyclaw-release -alias anyclaw \
+            -keypass anyclaw-release -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=AnyClaw, OU=Mobile, O=AnyClaw, L=Internet, ST=Internet, C=US"
+
+      - name: Build release APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Rename APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/anyclaw.apk
+        run: mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: anyclaw
-          path: android/app/build/outputs/apk/debug/anyclaw.apk
+          name: anyclaw-release
+          path: android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
 
       - name: Generate changelog
         if: github.ref_type == 'branch'
@@ -94,6 +101,6 @@ jobs:
             ---
             Branch: ${{ github.ref_name }}
             Built from commit ${{ github.sha }}
-          files: android/app/build/outputs/apk/debug/anyclaw.apk
+          files: android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
           draft: false
           prerelease: false
