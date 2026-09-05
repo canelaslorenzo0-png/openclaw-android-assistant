@@ -67,7 +67,7 @@ jobs:
         run: |
           PREV_TAG=$(git tag --sort=-v:refname | head -1)
           if [ -n "$PREV_TAG" ]; then
-            CHANGES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --reverse)
+            CHANGES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --reverse | head -n 60)
           else
             CHANGES=$(git log --pretty=format:"- %s" --reverse -20)
           fi
