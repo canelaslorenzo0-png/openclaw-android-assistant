@@ -54,13 +54,17 @@ jobs:
             -storepass anyclaw-release -alias anyclaw \
             -keypass anyclaw-release -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=AnyClaw, OU=Mobile, O=AnyClaw, L=Internet, ST=Internet, C=US"
+          printf 'storeFile=release.keystore\nstorePassword=anyclaw-release\nkeyAlias=anyclaw\nkeyPassword=anyclaw-release\n' > android/key.properties
 
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Rename APK
-        run: mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
+        run: |
+          RELEASE_DIR=android/app/build/outputs/apk/release
+          APK=$(find "$RELEASE_DIR" -maxdepth 1 -name "*.apk" | head -n 1)
+          mv "$APK" "$RELEASE_DIR/anyclaw-v1.0.0.apk"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
