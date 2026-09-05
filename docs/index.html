@@ -3,824 +3,175 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mezchaju — OpenClaw + Codex + Claude Code on Android</title>
-<meta name="description" content="OpenClaw + Codex CLI + Claude Code (via Claw Code / OpenClaude) in a single Android APK. Three AI agents, one app, your pocket. No root. No Termux." />
-<meta property="og:title" content="Mezchaju — Claude Code on Android" />
-<meta property="og:description" content="OpenClaw + Codex + Claude Code running natively on Android. Three agents, one APK, zero dependencies." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://friuns2.github.io/openclaw-android-assistant/" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<title>Mezchaju — OpenClaw + DeepSeek Harness + Claw Code on Android</title>
+<meta name="description" content="Mezchaju runs the OpenClaw gateway, DeepSeek Harness and Claw Code natively on Android. Bring your own provider: OpenCodeZen, OpenRouter or Xkiro." />
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #08080c;
-    --surface: #0f0f15;
-    --surface-raised: #151520;
-    --border: #1c1c2a;
-    --border-glow: #2a1a10;
-    --text: #e8e4df;
-    --text-dim: #8a8680;
-    --amber: #e8941a;
-    --amber-soft: #c4782a;
-    --crimson: #c93535;
-    --crimson-deep: #8a1f1f;
-    --cream: #f0e6d6;
-    --mono: 'DM Mono', 'SF Mono', monospace;
-    --display: 'Instrument Serif', Georgia, serif;
-    --body: 'Syne', sans-serif;
+    --bg: #0b0f17;
+    --panel: #121826;
+    --panel2: #0f1522;
+    --line: #1f2a3f;
+    --text: #e8edf7;
+    --dim: #9aa7bd;
+    --accent: #f59e0b;
+    --accent2: #22d3ee;
+    --green: #34d399;
+    --radius: 16px;
+    --shadow: 0 20px 60px rgba(0,0,0,.45);
   }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
   body {
-    font-family: var(--body);
-    background: var(--bg);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(1000px 500px at 85% -10%, rgba(34,211,238,.14), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(245,158,11,.12), transparent 55%),
+      var(--bg);
     color: var(--text);
-    line-height: 1.65;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  a { color: var(--amber); text-decoration: none; transition: color .2s; }
-  a:hover { color: var(--cream); }
-
-  .grain {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: .035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    position: relative;
+    line-height: 1.6;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4rem 1.5rem;
-    overflow: hidden;
   }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140%;
-    height: 80%;
-    background: radial-gradient(ellipse at center, rgba(232, 148, 26, .06) 0%, rgba(201, 53, 53, .03) 40%, transparent 70%);
-    pointer-events: none;
+  header { display: flex; align-items: center; justify-content: space-between; padding: 26px 0; }
+  .logo { font-weight: 800; font-size: 1.35rem; letter-spacing: .5px; }
+  .logo span { color: var(--accent); }
+  nav a { color: var(--dim); text-decoration: none; margin-left: 22px; font-size: .95rem; transition: color .2s; }
+  nav a:hover { color: var(--text); }
+
+  .hero { padding: 90px 0 70px; text-align: center; }
+  .hero .badge {
+    display: inline-block; padding: 7px 16px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--panel);
+    color: var(--green); font-size: .85rem; margin-bottom: 26px;
   }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--border-glow) 30%, var(--amber-soft) 50%, var(--border-glow) 70%, transparent 100%);
-  }
-
-  .hero-claw {
-    font-size: clamp(4rem, 12vw, 8rem);
-    line-height: 1;
-    margin-bottom: 1rem;
-    animation: float 6s ease-in-out infinite;
-    filter: drop-shadow(0 0 40px rgba(232, 148, 26, .15));
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  .hero h1 {
-    font-family: var(--display);
-    font-size: clamp(3.5rem, 10vw, 7rem);
-    font-weight: 400;
-    letter-spacing: -.03em;
-    line-height: .9;
-    color: var(--cream);
-    margin-bottom: .75rem;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--amber);
-  }
-
-  .hero-sub {
-    font-family: var(--mono);
-    font-size: clamp(.75rem, 1.4vw, .9rem);
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: .2em;
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-desc {
-    max-width: 560px;
-    font-size: clamp(1rem, 2vw, 1.15rem);
-    color: var(--text-dim);
-    margin-bottom: 3rem;
-    line-height: 1.75;
-  }
-
-  .hero-desc strong { color: var(--text); font-weight: 600; }
-
-  .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-
+  .hero h1 { font-size: clamp(2.6rem, 6vw, 4.4rem); line-height: 1.08; letter-spacing: -1px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { color: var(--dim); font-size: 1.2rem; max-width: 680px; margin: 26px auto 38px; }
+  .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .6rem;
-    padding: .85rem 2rem;
-    border-radius: 4px;
-    font-family: var(--body);
-    font-weight: 600;
-    font-size: .95rem;
-    letter-spacing: .02em;
-    transition: all .25s ease;
-    cursor: pointer;
-    border: none;
+    display: inline-block; padding: 14px 30px; border-radius: 12px;
+    font-weight: 700; text-decoration: none; font-size: 1.02rem; transition: transform .15s, box-shadow .2s;
   }
+  .btn.primary { background: linear-gradient(135deg, var(--accent), #d97706); color: #0b0f17; box-shadow: 0 10px 30px rgba(245,158,11,.35); }
+  .btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--panel); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.primary:hover { box-shadow: 0 16px 40px rgba(245,158,11,.45); }
 
-  .btn-primary {
-    background: var(--amber);
-    color: #080808;
-  }
-  .btn-primary:hover {
-    background: var(--cream);
-    color: #080808;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(232, 148, 26, .25);
-  }
+  .hero .three { display: flex; gap: 12px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
+  .hero .three span { padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--dim); font-size: .9rem; }
 
-  .btn-ghost {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover {
-    border-color: var(--amber-soft);
-    color: var(--amber);
-    transform: translateY(-2px);
-  }
+  section { padding: 40px 0 70px; }
+  h2 { font-size: 2rem; margin-bottom: 12px; letter-spacing: -.5px; }
+  .lede { color: var(--dim); max-width: 620px; margin-bottom: 34px; }
 
-  /* ─── SECTION ─── */
-  .section {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 6rem 1.5rem;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: linear-gradient(180deg, var(--panel), var(--panel2)); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: rgba(245,158,11,.5); transform: translateY(-3px); }
+  .card .icon { font-size: 2rem; margin-bottom: 14px; }
+  .card h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .card p { color: var(--dim); font-size: .95rem; }
+  .card .tag { display: inline-block; margin-top: 14px; font-size: .78rem; color: var(--accent2); border: 1px solid var(--line); padding: 3px 10px; border-radius: 999px; }
 
-  .section-label {
-    font-family: var(--mono);
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: .25em;
-    color: var(--amber-soft);
-    margin-bottom: .75rem;
-  }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; counter-reset: step; }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; position: relative; }
+  .step::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-size: .8rem; color: var(--accent); display: block; margin-bottom: 10px; font-weight: 700; }
+  .step h4 { font-size: 1.02rem; margin-bottom: 6px; }
+  .step p { color: var(--dim); font-size: .9rem; }
 
-  .section h2 {
-    font-family: var(--display);
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 400;
-    color: var(--cream);
-    margin-bottom: 1.5rem;
-    line-height: 1.1;
-  }
+  .providers { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+  .provider { flex: 1 1 200px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; text-align: center; }
+  .provider .dot { width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 12px; }
+  .provider h4 { font-size: 1rem; margin-bottom: 4px; }
+  .provider p { color: var(--green); font-size: .82rem; }
 
-  .section h2 em { font-style: italic; color: var(--amber); }
+  .note { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.3); border-radius: 14px; padding: 18px 22px; color: var(--dim); font-size: .92rem; margin-top: 30px; }
 
-  .section-intro {
-    max-width: 640px;
-    color: var(--text-dim);
-    font-size: 1.05rem;
-    line-height: 1.75;
-    margin-bottom: 3rem;
-  }
+  code { background: #0d1420; border: 1px solid var(--line); padding: 2px 7px; border-radius: 6px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .85em; color: var(--accent2); }
 
-  /* ─── FEATURE GRID ─── */
-  .feat-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .feat {
-    background: var(--surface);
-    padding: 2rem;
-    transition: background .3s;
-  }
-
-  .feat:hover {
-    background: var(--surface-raised);
-  }
-
-  .feat-icon {
-    font-size: 1.6rem;
-    margin-bottom: .75rem;
-    display: block;
-  }
-
-  .feat h3 {
-    font-family: var(--body);
-    font-size: .95rem;
-    font-weight: 700;
-    margin-bottom: .5rem;
-    color: var(--cream);
-  }
-
-  .feat p {
-    font-size: .85rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  /* ─── ARCH ─── */
-  .arch-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .arch-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-  }
-
-  .arch-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  .arch-dot:nth-child(1) { background: var(--crimson); }
-  .arch-dot:nth-child(2) { background: var(--amber); }
-  .arch-dot:nth-child(3) { background: #22c55e; }
-
-  .arch-body {
-    padding: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .arch-body pre {
-    font-family: var(--mono);
-    font-size: .78rem;
-    line-height: 1.7;
-    color: var(--amber-soft);
-    white-space: pre;
-    margin: 0;
-  }
-
-  .arch-body .hl { color: var(--amber); }
-  .arch-body .dim { color: var(--text-dim); }
-  .arch-body .grn { color: #22c55e; }
-
-  /* ─── STEPS ─── */
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    counter-reset: step;
-  }
-
-  .step {
-    background: var(--surface);
-    padding: 2rem;
-    counter-increment: step;
-    position: relative;
-    transition: background .3s;
-  }
-
-  .step:hover { background: var(--surface-raised); }
-
-  .step::before {
-    content: counter(step, decimal-leading-zero);
-    font-family: var(--mono);
-    font-size: .7rem;
-    color: var(--amber-soft);
-    letter-spacing: .1em;
-    display: block;
-    margin-bottom: .75rem;
-  }
-
-  .step h3 {
-    font-size: .95rem;
-    font-weight: 700;
-    margin-bottom: .4rem;
-    color: var(--cream);
-  }
-
-  .step p {
-    font-size: .85rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  /* ─── QUICK START CODE ─── */
-  .code-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .code-tab {
-    padding: .75rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: .75rem;
-    color: var(--text-dim);
-    letter-spacing: .05em;
-  }
-
-  .code-body {
-    padding: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .code-body code {
-    font-family: var(--mono);
-    font-size: .82rem;
-    line-height: 1.8;
-    color: #22c55e;
-    white-space: pre;
-  }
-  .code-body .cmt { color: var(--text-dim); }
-
-  /* ─── STACK TABLE ─── */
-  .stack-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .stack-table th,
-  .stack-table td {
-    padding: .85rem 1.25rem;
-    text-align: left;
-    font-size: .88rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .stack-table th {
-    background: var(--surface);
-    font-family: var(--mono);
-    font-size: .7rem;
-    text-transform: uppercase;
-    letter-spacing: .15em;
-    color: var(--text-dim);
-    font-weight: 500;
-  }
-
-  .stack-table td { background: var(--surface); }
-  .stack-table tr:hover td { background: var(--surface-raised); }
-  .stack-table td:first-child { font-weight: 600; color: var(--cream); }
-
-  /* ─── RELEASE NOTES ─── */
-  .release-body h3 {
-    font-family: var(--body);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--amber);
-    margin: 1.5rem 0 .5rem;
-  }
-
-  .release-body ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .release-body li {
-    position: relative;
-    padding-left: 1.2em;
-    margin-bottom: .4rem;
-  }
-
-  .release-body li::before {
-    content: '›';
-    position: absolute;
-    left: 0;
-    color: var(--amber-soft);
-    font-weight: 700;
-  }
-
-  .release-body code {
-    font-family: var(--mono);
-    font-size: .82em;
-    color: var(--amber);
-    background: var(--surface);
-    padding: .1em .4em;
-    border-radius: 3px;
-  }
-
-  .release-body a { color: var(--amber); }
-  .release-body a:hover { color: var(--cream); }
-
-  /* ─── DIVIDER ─── */
-  .divider {
-    max-width: 1000px;
-    margin: 0 auto;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border-glow) 50%, var(--border) 80%, transparent 100%);
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    text-align: center;
-    padding: 5rem 1.5rem 4rem;
-    color: var(--text-dim);
-    font-size: .9rem;
-  }
-
-  footer .tagline {
-    font-family: var(--display);
-    font-size: 1.5rem;
-    font-style: italic;
-    color: var(--amber-soft);
-    margin-bottom: .75rem;
-  }
-
-  footer .sub { font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; }
-
-  footer .links {
-    margin-top: 2rem;
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  footer .links a {
-    font-family: var(--mono);
-    font-size: .8rem;
-    color: var(--text-dim);
-    letter-spacing: .05em;
-    transition: color .2s;
-  }
-  footer .links a:hover { color: var(--amber); }
-
-  /* ─── ANIMATIONS ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .fade-in {
-    opacity: 0;
-    animation: fadeUp .7s ease forwards;
-  }
-  .d1 { animation-delay: .1s; }
-  .d2 { animation-delay: .2s; }
-  .d3 { animation-delay: .35s; }
-  .d4 { animation-delay: .5s; }
-  .d5 { animation-delay: .65s; }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    .feat-grid { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .hero { min-height: auto; padding: 6rem 1rem 4rem; }
-    .section { padding: 4rem 1rem; }
-  }
-
-  @media (max-width: 480px) {
-    .cta-group { flex-direction: column; align-items: stretch; }
-    .btn { justify-content: center; }
-  }
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: .88rem; }
+  footer a { color: var(--accent2); text-decoration: none; }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="grain"></div>
+  <header>
+    <div class="logo">Mezchaju<span>.</span></div>
+    <nav>
+      <a href="#harnesses">Harnesses</a>
+      <a href="#providers">Providers</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/canelaslorenzo0-png/Mezchaju">GitHub</a>
+    </nav>
+  </header>
 
-<!-- ═══════════════ HERO ═══════════════ -->
-<div class="hero">
-  <div class="hero-claw fade-in d1">🦞</div>
-  <h1 class="fade-in d2">Any<em>Claw</em></h1>
-  <p class="hero-sub fade-in d3">OpenClaw + Codex + Claude Code &middot; Android</p>
-  <p class="hero-desc fade-in d4">
-    Three AI coding agents in <strong>one APK</strong>. OpenClaw gateway, Codex CLI,
-    and <strong>Claude Code</strong> (via Claw Code / OpenClaude) &mdash; all running
-    in a full Linux environment on your phone. <strong>No root. No server. No PC.</strong>
-  </p>
-  <div class="cta-group fade-in d5">
-    <a href="https://github.com/friuns2/openclaw-android-assistant/releases/latest/download/app-prod-release.apk" class="btn btn-primary">Download APK</a>
-    <a href="https://play.google.com/store/apps/details?id=gptos.intelligence.assistant&hl=en" class="btn btn-primary" style="background:var(--crimson)">Google Play</a>
-    <a href="https://github.com/friuns2/openclaw-android-assistant" class="btn btn-ghost">GitHub</a>
-    <a href="https://github.com/friuns2/openclaw-android-assistant#quick-start" class="btn btn-ghost">Quick Start</a>
-  </div>
-</div>
-
-<!-- ═══════════════ SCREENSHOTS ═══════════════ -->
-<div class="section" style="text-align:center">
-  <p class="section-label">In action</p>
-  <h2>See it <em>running</em></h2>
-  <div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:2rem">
-    <img src="https://raw.githubusercontent.com/friuns2/openclaw-android-assistant/main/screenshots/screenshot.png" alt="OpenClaw Dashboard" style="width:260px;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.5)" />
-    <img src="https://raw.githubusercontent.com/friuns2/openclaw-android-assistant/main/screenshots/screenshot2.png" alt="Codex Coding Agent" style="width:260px;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.5)" />
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ FEATURES ═══════════════ -->
-<div class="section">
-  <p class="section-label">Capabilities</p>
-  <h2>Three agents, <em>one pocket</em></h2>
-  <p class="section-intro">
-    Mezchaju bundles OpenClaw (personal AI gateway), OpenAI Codex CLI (terminal coding agent),
-    and <strong>Claude Code</strong> (via Claw Code / OpenClaude &mdash; the leaked Claude Code architecture, 48K+ stars)
-    inside a self-contained Android app.
-  </p>
-
-  <div class="feat-grid">
-    <div class="feat">
-      <span class="feat-icon">🦞</span>
-      <h3>OpenClaw Dashboard</h3>
-      <p>Full Control UI &mdash; chat, agents, sessions, skills, Canvas. Runs locally on your device.</p>
+  <div class="hero">
+    <div class="badge">● Open-source · Android 7.0+ · No root</div>
+    <h1>Three coding agents.<br /><em>One phone.</em></h1>
+    <p class="sub">Mezchaju runs the <b>OpenClaw</b> gateway, <b>DeepSeek Harness</b> and <b>Claw Code</b> natively on Android — with your choice of provider: OpenCodeZen, OpenRouter or Xkiro.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/canelaslorenzo0-png/Mezchaju/releases">Download APK</a>
+      <a class="btn ghost" href="https://github.com/canelaslorenzo0-png/Mezchaju">Source on GitHub</a>
     </div>
-    <div class="feat">
-      <span class="feat-icon">💬</span>
-      <h3>Codex Chat</h3>
-      <p>Conversational coding agent with streaming, reasoning visibility, and multi-thread sessions.</p>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🦀</span>
-      <h3>Claude Code (OpenClaude)</h3>
-      <p>Full Claw Code agent &mdash; 19 tools, query engine, MCP integration, multi-agent swarms. Claude Code architecture on your phone.</p>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🐧</span>
-      <h3>Embedded Linux</h3>
-      <p>Complete Termux-derived userland &mdash; sh, apt, Node.js 24, Python, SSL certs. Extracted from APK.</p>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🔓</span>
-      <h3>Full Auto-Approval</h3>
-      <p>No permission popups. <code style="color:var(--amber);font-family:var(--mono);font-size:.8rem">danger-full-access</code> sandbox mode by default.</p>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🔋</span>
-      <h3>Background Execution</h3>
-      <p>Foreground service + battery exemption. Keeps running when you switch apps.</p>
+    <div class="three">
+      <span>🦞 OpenClaw gateway</span>
+      <span>⚡ DeepSeek Harness</span>
+      <span>🦀 Claw Code</span>
     </div>
   </div>
+
+  <section id="harnesses">
+    <h2>Built around real harnesses</h2>
+    <p class="lede">No smoke and mirrors — Mezchaju installs and wires together the agent stack on your device, then serves a local web UI you control.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🦞</div>
+        <h3>OpenClaw gateway</h3>
+        <p>The open agent gateway: tools, MCP, multi-agent routing, control UI — running as a local WebSocket service on your device.</p>
+        <span class="tag">localhost:18789 · WS</span>
+      </div>
+      <div class="card">
+        <div class="icon">⚡</div>
+        <h3>DeepSeek Harness</h3>
+        <p><code>dsh</code> — the everything-is-a-plugin agent harness by DeepSeek AI, installed from npm and run locally, provider-agnostic.</p>
+        <span class="tag">npx @deepseek-ai/dsh</span>
+      </div>
+      <div class="card">
+        <div class="icon">🦀</div>
+        <h3>Claw Code</h3>
+        <p>The Rust-powered claw harness — installed from the ultraworkers/claw-code workspace into the on-device Linux prefix.</p>
+        <span class="tag">cargo · rust</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="providers">
+    <h2>Bring your own provider</h2>
+    <p class="lede">No forced OpenAI login. Pick one of these, paste a key in the web UI, and go.</p>
+    <div class="providers">
+      <div class="provider"><div class="dot" style="background:#22d3ee"></div><h4>OpenCodeZen</h4><p>free models</p></div>
+      <div class="provider"><div class="dot" style="background:#f59e0b"></div><h4>OpenRouter</h4><p>free models</p></div>
+      <div class="provider"><div class="dot" style="background:#34d399"></div><h4>Xkiro</h4><p>free models</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>Install in three steps</h2>
+    <div class="steps">
+      <div class="step"><h4>Download the APK</h4><p>Grab <code>mezchaju-v1.1.0.apk</code> from Releases.</p></div>
+      <div class="step"><h4>Allow sideload</h4><p>Enable “install unknown apps” for your browser or file manager.</p></div>
+      <div class="step"><h4>First run</h4><p>The app sets up a full Linux prefix, installs the harnesses and starts the gateway.</p></div>
+    </div>
+    <div class="note">
+      ⚠️ First boot downloads Node.js, OpenClaw, DeepSeek Harness and Claw Code into the app’s private storage — allow a few minutes on a good connection.
+    </div>
+  </section>
+
+  <footer>
+    <p>Mezchaju — built on <a href="https://github.com/openclaw/openclaw">OpenClaw</a>, <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> and <a href="https://github.com/ultraworkers/claw-code">Claw Code</a>. Not affiliated with any model provider.</p>
+  </footer>
+
 </div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
-<div class="section">
-  <p class="section-label">Under the hood</p>
-  <h2>Four layers, <em>one device</em></h2>
-
-  <div class="arch-wrap">
-    <div class="arch-header">
-      <span class="arch-dot"></span>
-      <span class="arch-dot"></span>
-      <span class="arch-dot"></span>
-    </div>
-    <div class="arch-body">
-<pre>
-<span class="dim">┌────────────────────────────────────────────────────────┐</span>
-<span class="dim">│</span>                    <span class="hl">Android APK</span>                         <span class="dim">│</span>
-<span class="dim">│</span>                                                        <span class="dim">│</span>
-<span class="dim">│</span>  <span class="grn">WebView (Vue.js)</span>  ←→  <span class="hl">CodexServerManager</span>              <span class="dim">│</span>
-<span class="dim">│</span>                                                        <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">┌──────────────────────────────────────────────────┐</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>  <span class="grn">codex-web-local</span>   → :18923  (HTTP + Vue UI)    <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>    └─ codex app-server  (Rust/musl, JSON-RPC)    <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>                                                  <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>  <span class="hl">openclaw gateway</span>  → :18789  (WebSocket)         <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>  <span class="hl">openclaw ctrl UI</span>  → :19001  (Static files)      <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>                                                  <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>                                                  <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>  <span class="grn">claw-code agent</span>   → Claude Code (OpenClaude)    <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>                                                  <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">│</span>  proxy.js          → :18924  (CONNECT, DNS/TLS)  <span class="dim">│</span>  <span class="dim">│</span>
-<span class="dim">│</span>  <span class="dim">└──────────────────────────────────────────────────┘</span>  <span class="dim">│</span>
-<span class="dim">└────────────────────────────────────────────────────────┘</span>
-</pre>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ STARTUP ═══════════════ -->
-<div class="section">
-  <p class="section-label">Boot sequence</p>
-  <h2>From cold start to <em>ready</em></h2>
-
-  <div class="steps">
-    <div class="step">
-      <h3>Battery &amp; Service</h3>
-      <p>Request Doze exemption. Start foreground service with persistent notification.</p>
-    </div>
-    <div class="step">
-      <h3>Bootstrap Extraction</h3>
-      <p>Extract Termux bootstrap zip into app&rsquo;s private storage. Fix hardcoded paths.</p>
-    </div>
-    <div class="step">
-      <h3>Node.js &amp; Toolchain</h3>
-      <p>Install Node.js 24, Python, clang/cmake/make/lld for native module builds.</p>
-    </div>
-    <div class="step">
-      <h3>OpenClaw + koffi</h3>
-      <p>Install OpenClaw globally. Build koffi FFI module from source with Termux toolchain.</p>
-    </div>
-    <div class="step">
-      <h3>Claw Code / OpenClaude</h3>
-      <p>Install Claude Code agent (Claw Code). 19 tools, query engine, MCP, multi-agent swarms.</p>
-    </div>
-    <div class="step">
-      <h3>Codex CLI + Binary</h3>
-      <p>Extract server bundle. Download native Rust binary from npm registry.</p>
-    </div>
-    <div class="step">
-      <h3>Proxy + Auth + Launch</h3>
-      <p>Start CONNECT proxy, OAuth login, gateway, Control UI server, then load WebView.</p>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ QUICK START ═══════════════ -->
-<div class="section">
-  <p class="section-label">Get started</p>
-  <h2>Build from <em>source</em></h2>
-
-  <div class="code-card">
-    <div class="code-tab">terminal</div>
-    <div class="code-body">
-<code><span class="cmt"># clone</span>
-git clone https://github.com/friuns2/openclaw-android-assistant.git
-cd openclaw-android-assistant
-
-<span class="cmt"># build frontend</span>
-npm install && npm run build
-
-<span class="cmt"># prepare android</span>
-cd android && bash scripts/download-bootstrap.sh
-
-<span class="cmt"># build + install + launch</span>
-bash scripts/build-server-bundle.sh && ./gradlew assembleDebug \
-  && adb install -r app/build/outputs/apk/debug/app-debug.apk \
-  && adb shell am start -n com.codex.mobile/.MainActivity</code>
-    </div>
-  </div>
-  <p style="margin-top:1.5rem;color:var(--text-dim);font-size:.9rem">
-    Or just <a href="https://github.com/friuns2/openclaw-android-assistant/releases/latest/download/app-prod-release.apk">download the latest APK</a> directly.
-  </p>
-</div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ TECH STACK ═══════════════ -->
-<div class="section">
-  <p class="section-label">Stack</p>
-  <h2>What&rsquo;s <em>inside</em></h2>
-
-  <table class="stack-table">
-    <thead><tr><th>Layer</th><th>Technology</th><th>Version</th></tr></thead>
-    <tbody>
-      <tr><td>AI Gateway</td><td>OpenClaw</td><td>2026.2.21</td></tr>
-      <tr><td>AI Agent</td><td>OpenAI Codex CLI</td><td>0.104.0</td></tr>
-      <tr><td>AI Agent</td><td>Claw Code / OpenClaude (Claude Code)</td><td>latest</td></tr>
-      <tr><td>Model</td><td>gpt-5.3-codex (via Codex OAuth)</td><td>&mdash;</td></tr>
-      <tr><td>Runtime</td><td>Node.js (Termux)</td><td>24.13.0</td></tr>
-      <tr><td>Native</td><td>Rust (musl, aarch64)</td><td>&mdash;</td></tr>
-      <tr><td>Frontend</td><td>Vue.js 3 + Vite + Tailwind</td><td>3.x</td></tr>
-      <tr><td>Android</td><td>Kotlin + WebView</td><td>2.1.0</td></tr>
-      <tr><td>Linux</td><td>Termux bootstrap (aarch64)</td><td>&mdash;</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ═══════════════ RELEASE NOTES ═══════════════ -->
-<div class="section" id="release">
-  <p class="section-label">Latest upstream release</p>
-  <!-- RELEASE_START -->
-  <h2><em>openclaw 2026.9.1</em></h2>
-  <p class="release-date" style="font-family:var(--mono);font-size:.8rem;color:var(--text-dim);margin-bottom:2rem">Released Sep 03, 2026</p>
-  <div class="release-body" style="color:var(--text-dim);font-size:.92rem;line-height:1.75;max-width:800px">
-  <h3>Changes</h3>
-    <ul>
-    <li>**Personal GitHub accounts:** connect &quot;My GitHub&quot; beside the system account in your profile, publish pull requests under an explicit personal identity, and switch sessions without re-verifying credentials every time. (#133799, #136223)</li>
-    <li>**Model setup that shows how you are signed in:** Model Setup lists account versus API-key access with the runtime-reported email for Codex and Claude candidates, the catalog &quot;+&quot; opens the native Codex or Claude CLI in a terminal, and the provider defaults page autosaves with a simpler model picker footer. Related #136068. (#136521, #136230, #134813, #136160)</li>
-    <li>**New models and usage:** support Anthropic Fable 5.1 from shared model metadata, show SuperGrok usage in `openclaw models` and the usage panel, keep GPT-5.6 Ultra selected across runtime boundaries and configured native accounts, and keep Sonnet 5 pricing current on Vertex. Related #135623, #135991, #135664. (#135638, #135766, #135397, #136061, #135761)</li>
-    <li>**Local and configured providers:** discover llama.cpp models behind web-app endpoints, keep local Ollama routes selectable, auto-enable the Google provider plugin when it is configured, retain externally authenticated providers in the model menu, and refresh model catalogs after auth or config changes without a restart. Related #135361, #134731, #135221, #134516. (#135445, #135095, #135239, #135046, #134361, #135063, #135353) @Bloodis94, @obviyus, @BoatAngle, @Solvely-Colin, and @goslingmanagment</li>
-    <li>**Agent working directories and worktrees:** set `agents.defaults.cwd` or a per-agent `cwd` and describe directory roles in the prompt, configure a global `worktreeRoot`, and run up to 100 managed checkouts without sessions being rejected at the limit. Related #134848, #135852. (#135080, #134872, #135885, #135989)</li>
-    <li>**Configuration controls:** `cron.skipMissedJobs` skips missed recurring jobs at startup, `blockedHostnames` on the SSRF policy blocks configured hosts for browser, web fetch, and webhooks, `config set` accepts `--expect-current-json`, `--expect-current-absent`, `--dry-run`, and `--strict-json`, and `channels.&lt;id&gt;.enabled: false` no longer loads that channel plugin. (#135071, #135097, #136137, #136211)</li>
-    <li>**Memory maintenance:** `openclaw memory reset` rebuilds derived indexes without deleting sessions, and recall outcomes from active memory are surfaced to the model. Related #135086. (#135653, #135193) @obviyus, and @wave-workflow</li>
-    <li>**Codex plugin:** preserve native history in supervised message forks, let idle chats resume while other chats run, stop interrupting long quiet native turns, keep configured MCP tools on native fallback, honor the user&#x27;s time zone, keep replies working after sub-plugin config changes, keep inbound audio for automatic voice replies, hide saved reasoning unless enabled, hide node exec when no capable node is connected, keep Codex streams connected under load, and move managed installs to Codex 0.152.1. Related #134552, #136143, #99272, #122233, #136015, #135618, #135571, #135978, #135966, #135338. (#134660, #136196, #134755, #134941, #136172, #135863, #135884, #136008, #136000, #135577, #136184, #136705) @ernestrolfson-design, @itsuzef, @NianJiuZst, @davidcittadini, @vyctorbrzezowski, @hyper-sdn, and @tzlwn1</li>
-    <li>**Session naming and switching:** new-session names are prepared after idle typing, switching sessions in large lists is faster with lighter sidebar work and payloads, sidebar catalog groups are capped at five sessions, and New Session and Chat do less startup work. Related #133702. (#133724, #135021, #135332, #135574, #136362, #136021, #136040)</li>
-    <li>**Control UI layout:** sidebar controls move into the agent header, session context menus are regrouped, the accent color lives with the theme, dashboard widgets fill mobile width, the shared Agent picker and settings pages are streamlined with loading skeletons, hovercards show participants, and Gateway suspension appears in account footers. Related #135506, #135535, #132147. (#134365, #135526, #135547, #133814, #134680, #134684, #134659, #134636, #136542, #136220, #134478, #134764) @MoerAI, and @Patrick-Erichsen</li>
-    <li>**Chat polish:** compaction gets a folding shimmer, the composer has a stable accessible name and accepts the next prompt right after send, Escape closes the visible session popover, dropdowns reopened stay dismissible, keyboard navigation survives submenu switches, and chat errors can be copied without expanding them. Related #136441, #134997, #135613, #136070. (#135988, #133829, #135345, #136445, #135006, #135629, #136085) and @Takhoffman</li>
-    <li>**macOS app:** a streamlined native chat composer, a browser sidebar that can expand past half width, lower idle menu-bar CPU, notifications when background sessions finish, a Talk overlay that survives quick toggles, and speech recognizers reused between voice captures. Related #136157, #136562, #127645. (#135608, #136168, #136572, #136519, #135731, #135401) and @Colton-Harris</li>
-    <li>**iOS and watchOS:** open session dashboards without nested Control UI, disclose model targets and enforce availability, show the latest output when reopening chats, keep Watch and realtime voice replies with their own turn, and explain when a spoken reply times out. Related #134306, #135251, #135693. (#132983, #135044, #135429, #135697, #135795, #135765) and @goslingmanagment</li>
-    <li>**Linux desktop:** first-run Gateway choices work without the CLI installed. Related #135565</li>
-    <li>**Channel controls:** Feishu and Matrix deliver the buttons an agent reply offers, and LINE tells the agent which buttons it renders, keeps the words a quick-reply prompt leaves behind, lets a group mention reach the turn that answers it, and gives up a card LINE would refuse instead of losing the reply. Related #132739, #134975, #135187, #135228. (#135255, #133268, #134915, #134976, #135195, #135229) and @ml12580</li>
-    <li>**CLI:** `channels add/login/logout/remove/resolve` accept `--agent`, `mcp --json` emits a JSON failure envelope, zsh and Bash completions escape descriptions and option values correctly, heartbeat status shows Gateway ages, `sessions tail` reports recorded trajectory outcomes, secrets JSON failures stay machine-readable, device approval hints keep their profile context, and TUI picker cancellation routes through shared input. Related #132347, #46932, #136089, #136406, #136632, #136556, #135089, #133128. (#135505, #132379, #64490, #135114, #136557, #136093, #136407, #136142, #136633, #133151) @EdenKangdw, @walker1211, @jeffrey4341, @qingminglong, @obviyus, and @aniruddhaadak80</li>
-    <li>**Plugins and skills:** renamed official plugins migrate by their legacy npm package name, plugin updates require capability consent when prior acceptance is stale while verified first-party plugins are exempt, plugin uninstalls persist across a Gateway restart and keep channel settings, and skill Workshop content, read-only diagnosis, and channel setup are corrected. Related #134076, #135726, #136591. (#130894, #134172, #134933, #135460, #135729, #134759, #134871, #136600, #136615) @RileyJJY, @beastyrabbit, @devzeroLL, @obviyus, and @Patrick-Erichsen</li>
-    <li>**Uninstall and backups:** `openclaw uninstall` defaults to removing only the service and keeps user data, Claude migration backups preserve overwritten generated skills, and backups exclude disabled workspaces, tolerate ACPX-generated symlinks, find managed schedules by identity, keep Git failure diagnostics, and retain the active config through volatile filtering. Related #125694, #127403, #135218, #136159, #136118, #136665. (#134299, #134302, #135830, #136215, #136133, #135455, #136666) @kodi, @obviyus, @ericcaiwx-star, @jarvismazz, @LiuwqGit, @wave-workflow, @ly85206559, and @devzeroLL</li>
-    </ul>
-    <h3>Fixes</h3>
-    <ul>
-    <li>**Ingress and token safety:** bound concurrent pre-auth reads on SMS webhooks, stop delivering commands to a Watch node after its device is revoked, require the per-process nonce on the Copilot Azure BYOK proxy, isolate webhook rate limits by client, let authorized scoped node tokens be managed by their owner, and reject oversized A2A JSON-RPC batches and responses. (#136504, #135904, #134781, #134622, #135617, #134603) and @eleqtrizit</li>
-    <li>**Secrets stay redacted:** `config.get` no longer returns unredacted pre-migration snapshots, blank sensitive fields stay editable without being treated as secrets, systemd unit backups no longer leak Gateway tokens, and iOS omits deep-link URLs from logs. Related #135649, #131781. (#134940, #135798, #131786, #134738) @markhaines, @vyctorbrzezowski, and @eleqtrizit</li>
-    <li>**Browser and filesystem boundaries:** Chrome MCP `--browserUrl` endpoints obey the CDP reachability policy, unreviewed Chrome MCP upgrades are blocked, unsupported fill field keys are rejected, sanitized temp file names reject dot segments, and memory sync skips symlinked or non-regular workspace files instead of aborting. Related #135845, #131231, #134967. (#135857, #136121, #131400, #135803, #135042) @obviyus, @srb11e, @teddytennant, @ruel225, and @kiranvk-2011</li>
-    <li>**Authority boundaries:** agent creation stops after delegated authority closes, system-agent setup stops writing after its run closes, unauthorized native `/compact` returns no response, clients are paused when a role requires a verified identity, guest coding works again in private sandboxes, and dashboard GitHub Actions reads use the agent identity. Related #136081, #136219, #133955, #37634, #135515. (#136090, #136247, #131408, #136420, #135702, #135740) @obviyus, @aoclaw-glitch, and @whyuds</li>
-    <li>**Upgrade data safety:** identical session event replays migrate cleanly, nested session writes keep their order, schema-17 session repair is atomic, legacy cron rows keep their enabled state and delivery intent, credentials replaced during cleanup are preserved, workspaces survive legacy agent-list upgrades, and per-agent memory search survives Doctor. Related #134455, #131113, #135634, #135635, #135637, #135656, #134256. (#134568, #131456, #134272, #132868, #135736, #134892, #134760) @gaoanze888, @Grynn, @RileyJJY, @obviyus, @CanReader, and @vdruts</li>
-    <li>**Doctor converges:** `doctor --fix` finishes on empty workspace attestations, stale workspace setup loops resolve, incomplete exec-approvals migrations fail loudly and empty stubs retire, contaminated device-pairing records no longer crash migration, Windows Doctor and retained workspace recovery are unblocked, and legacy transcript checks are left to migration. Related #134445, #134331, #135437, #135968, #134340, #131770. (#134641, #135755, #135454, #135981, #134483, #136578, #134765) @obviyus, @rosssaunders, @jjjhenriksen, @Deregtx, @qdivan, @samson1357924, @LiuwqGit, and @sblindt</li>
-    <li>**Doctor keeps your config:** authored values and agents survive repair, official plugin config is preserved before install, external plugin payloads are kept, keyed multi-agent rosters and explicit agent rosters are repaired and persisted, and stale npm plugins are recovered during update repair. Related #134407, #134353, #135450. (#135671, #134717, #135791, #134706, #134758, #135451) @obviyus, @abacha, and @xiaomijituan</li>
-    <li>**Shared credential migration:** interrupted migrations recover, stranded credentials are restored, redundant relocation subsets converge, relocation conflicts are diagnosed with forced-login owners cleared, relogin repairs stale profile order, custom provider SecretRefs survive Doctor, the durable auth order is published on a running Gateway, and shared auth health reports without a default agent. Related #132605, #132979, #135385, #135140, #135079, #135734. (#134952, #135346, #135096, #134808, #135739, #135355, #135357, #135847, #135443, #134902, #133978) @fuller-stack-dev, @Deregtx, @obviyus, @mattcbianco, @dannevang, @yetval, @josephbergvinson, and @lzhan011</li>
-    <li>**Credential writes and state directories:** CLI and Gateway state-directory split-brain is detected before credential writes, Model Setup no longer leaves a stale claude-cli key after Claude CLI activation, retained device-auth files and unconfigured agent databases are explained, and stale OpenAI doctor route pins are repaired. Related #134379, #101672. (#134403, #134779, #135295, #102180) @leilei3167, @aaajiao, @PollyBot13, @849261680, and @cpwilhelmi</li>
-    <li>**Subagent completions arrive:** completions are delivered after busy parent turns, background completion rejections are caught, empty completions are recorded, unsent completions are no longer reported as delivered, rejected requester wakes settle, model reroutes are shown in the completion including rerouted siblings in batched requester wakes, and Swarm completion guidance matches delivery. Related #134186, #131734, #135633, #135692, #133517. (#136423, #131735, #135846, #136524, #136033, #135531, #133660) @ruel225, @louisfy, @obviyus, @jakestenger, @Grynn, and @MertBasar0</li>
-    <li>**Compaction and context accounting:** native compaction is serialized with session writers and kept in one persistent transcript marker, cached usage is no longer overcounted, context usage survives Anthropic proxies that omit usage or cache fields, and status keeps context usage after tool-only turns. Related #99843, #126436, #135530. (#135441, #136169, #99864, #126473, #135467, #134634, #135580) @obviyus, @LZY3538, @ayaangazali, @jrex-jooni, @Oliverbot26, @Yigtwxx, @goslingmanagment, @dmsrg399, and @VACInc</li>
-    <li>**Fallback and retries:** Anthropic refusals are terminal instead of resending, model fallback no longer cycles every provider when the session already holds a turn claim, transient LLM retries have one failover owner that surfaces a persistent outage sooner, and failover counters appear in console logs. Related #134968, #134187. (#134980, #134219, #134281, #135844) @obviyus, @tzlwn1, and @svdwalt007</li>
-    <li>**Replies that reach the conversation:** stale session dispatches are refreshed so a message after a reset is not dropped, deliveries mirrored into another session are no longer silently lost, an interrupted user message stays in context after restart recovery, fenced code survives duplicate-block collapse byte for byte, commentary progress shows before final validation with unique segment identities, and requester sessions recover after a settle-wake timeout. Related #135149, #132766, #135881, #135882, #135949, #134971, #135231. (#135154, #134083, #136023, #135945, #135954, #135081, #135854) @obviyus, @edenfunf, @VACInc, @abacha, @leilei3167, @yetval, @ruel225, @JosephNatsu, @akagifreeez, @tomroberts78, and @nikolascostello</li>
-    <li>**Cron and heartbeat:** cancelled runs settle without ending cron retries early, `NO_REPLY` is preserved after tool calls, proven-not-sent announce deliveries retry, failure-alert outcomes persist, one-shot retries survive startup recovery, immediate main-session wakes are admitted with heartbeat disabled, the first-alert preamble shows once for isolated routes, the configured watchdog timeout is honored, scheduled replies bind to the published runtime, and ISO dates honor time zones. Related #133743, #133785, #135658, #135836, #134500, #135205, #135435, #136225. (#133747, #135919, #135985, #135516, #135083, #134648, #135849, #135925, #136256, #135973, #135155) @leilei3167, @obviyus, @Frank683456, @gaoanze888, @yetval, @RayWangyangMa, @rwinkelman, @sunlit-deng, @LowCode191, @virtexvirtuoso, @xialonglee, @jaxonparrott, @Famyoff, and @brettdaman</li>
-    <li>**Cron configuration:** kind changes work without an env object, isolated `cron add` no longer hides a fail-closed announce route, jobs are created with configured Codex app-server auth, legacy shorthand schedules validate their payload, history pages after visibility filtering, Doctor refuses store rewrites another process committed after its snapshot, and account identities are no longer suggested as recipients. Related #134895, #136042. (#134639, #135003, #134525, #135829, #136043, #127999, #134368) @ericcaiwx-star, @obviyus, @sjf-oa, @sjf, @teddytennant, @yetval, and @BryanTegomoh</li>
-    <li>**Sessions and runs:** a cyclic session parent chain no longer hangs context building, the Gateway survives late CLI output after a timeout, restart drain counts as ingress idle, stale CLI recovery cannot replace newer sessions, yielded CLI spawns settle, BOOT.md runs when a previous boot session exists, oversized transcript archives stream instead of loading whole, queued cold turns keep CLI continuity, and worktree restore capacity advice is correct. Related #132581, #124343, #134748. (#131567, #132582, #133871, #135168, #134974, #134831, #136171, #136283, #136644, #136717) @TARSDrakon, @SebTardif, @obviyus, @mushuiyu886, @VACInc, @aoclaw-glitch, @miguelarios, @efe-arv, @liri-ha, and @anyech</li>
-    <li>**Tool results and edits:** `oc-path` patches preserve exact edit bytes, PDF and image analysis survive Code Mode, plugin tools are kept for namespaced allowlist entries, exec selects capable nodes and reports its target, failed `/bash` commands show their real exit status, `sessions_spawn` declares its completion-message expectation, and failed-exec warnings are preserved on silent turns. Related #136530, #132750, #131765, #133385, #75848, #135068. (#136531, #135037, #132753, #131767, #133414, #136570, #135119, #132756) @vyctorbrzezowski, @MoerAI, @alfredjbclaw, and @sashankh</li>
-    <li>**Markdown, links, and media:** task lists survive chunk boundaries, literal Markdown and balanced image URLs are preserved, complete markdown links are parsed and link preprocessing is cancelled with the reply, UTF-8 attachments are recognized across sniff boundaries and keep their types when chunks are reused, inferred text is preserved while downloads are rejected promptly, fractional storage limits are reported accurately, and attachment failure cards stay out of durable model history. Related #127637, #135921, #135922, #136397, #135061, #136139, #136140. (#135200, #136228, #135341, #132883, #135227, #135232, #135928, #136402, #135185, #136685) @obviyus, @SunnyShu0925, @ly85206559, @gaoanze888, and @snls1994</li>
-    <li>**Slack:** replies to existing threads send again, Agent View DMs keep their per-root sessions after a Gateway restart in HTTP mode and collapse correctly when Slack rejects the prompts probe, short replies arrive before progress finalization, quiet previews stay on the latest preamble, socket and relay accounts start without an unused signing secret, pre-dispatch rejections are surfaced, agent RPC messages use the configured identity, and Enterprise thread lookups are not duplicated. Related #126872. (#136566, #136559, #136510, #136460, #134716, #136092, #134827, #132723, #122078, #121598) @pash-openai, @zhangguiping-xydt, @Iskam31, and @mikasa0818</li>
-    <li>**Discord:** webhook reply limits and delivery outcomes are preserved, missing response IDs no longer falsely confirm delivery, model picker choices apply without false failures, session-busy notices honor reply visibility, error replies stop after a voice consult is cancelled, and voice capture is bound to one lifecycle owner. Related #135946, #135947, #133550, #135442, #135340. (#135963, #136620, #135382, #135444, #135380, #135870) and @LZY3538</li>
-    <li>**Telegram and WhatsApp:** durably queued Telegram callbacks are acknowledged promptly, WhatsApp replies are sent unquoted when the quote cache misses so bubbles never render blank, and Doctor reports shadowed ack emoji and lossy acknowledgement scope migrations. Related #133294, #127948, #119317, #112796. (#133379, #127959, #119501, #129825) @Paeddy87, @Finn763, @markswitch83, @harjothkhara, @obviyus, @abacha, and @yetval</li>
-    <li>**iMessage, Signal, Google Chat, Teams, Matrix, Feishu, Twitch, Tlon:** iMessage sends fail fast after the private-API bridge dies and remote attachments survive materialization, Signal publishes terminal status on permanent SSE rejection and rejects invalid UTF-8, Google Chat labeled links keep labels with spaces, Teams keeps thread context without a replyToId and Doctor can load its state checker after a source build, Matrix keeps code out of spoiler collisions and persists its sync cache after schema upgrades, Feishu validates document API outcomes, Twitch names the `accessToken` key in setup errors, and Tlon preserves parser progress. Related #135860, #136104, #129344, #136499, #134741. (#134572, #136301, #136178, #121569, #136151, #129345, #136509, #128453, #134742, #135106, #135421, #135181) @zhangguiping-xydt, @obviyus, @zqchris, @masatohoshino, @sunlit-deng, @ericcaiwx-star, @KimOckHyun, @amalysh, @ruel225, @w9n, and @ly85206559</li>
-    <li>**Channel accounts and delivery:** HTTP routes are scoped to account lifetimes, rejected webhook connections are released after answering, failed plugin accounts appear in status and health, explicitly disabled manifest accounts are omitted, explicit channels resolve through the scoped plugin registry, capability timeout reports stay alive, message plugin cleanup runs before the CLI exits, and the selected agent is preserved during plugin discovery. Related #132886, #126808, #135573, #136538, #136563. (#133297, #126818, #135082, #135417, #135831, #136539, #136564, #135505) @goffern, @edenfunf, @obviyus, @ly85206559, @ruel225, and @TailsProwerWorks</li>
-    <li>**Voice, Talk, and TTS:** voice-call setup reports missing agent ownership, diagnostic logs stream with backpressure, host cancellation is not reported as a tool failure, Talk consults keep their owner across clients and internal prompts out of later context, narration requests are cancelled when their turn ends, terminal command replies stay text-only, local CLI synthesis inherits request timeouts, OpenAI OAuth audio transcription works again, and Volcengine TTS rejects invalid UTF-8. Related #132619, #134883, #126730, #82582, #96135. (#134739, #134838, #134924, #135031, #135423, #134839, #134802, #135222, #135855, #134010) @sunlit-deng, @astra-openclaw, @najef1979-code, @yungchentang, @kAIborg24, and @ZengWen-DT</li>
-    <li>**Web chat and Control UI recovery:** replies to attachment-only assistant messages are restored, replies appear above queued prompts and hydrated replies reconcile by identity during recovery, WebChat reset denials show without admin scope, Ask OpenClaw connections and conversation recovery are restored, and cloud sessions can be restored from Chat or kept stopped with cleanup failures surfaced. Related #135507, #135533, #134679, #134727, #134506. (#135393, #135568, #135715, #134696, #134776, #135024, #135583) @jalehman, @rwinkelman, and @obviyus</li>
-    <li>**Control UI chat:** new-session sends show immediately under load, sent images stay visible during history handoff and stable on hover, loaded images survive Gateway outages, late dictation transcripts are kept after Stop, the selected agent stays on native progress cards and dashboards, interrupted runs retire from history, commentary reconciles by run and item identity, and speaker names survive conversation exports. Related #135026, #135156, #136437. (#136069, #136072, #136440, #136446, #135109, #135426, #134714, #134457, #134888, #136439) @jadabreu, @rwinkelman, @Synthetic2802, and @RomneyDa</li>
-    <li>**Control UI details:** wildcard tool policies display correctly, compact output token counts return, tool-only model auth rows are ignored, the model picker discloses its write scope, unavailable agent harnesses and trusted-proxy login failures are explained, OAuth errors are concise, heartbeat scratch loads read-only, automation links open beyond the loaded page, equivalent Usage filters clear from their menus, format-constrained settings stay editable, the chat face switch gets icons and embedded visibility with standardized menu options, sharing member lists load with skeletons, model provider refresh status is aligned, Inbox stays out of Settings, and the macOS composer shows the Default permission icon. Related #134306, #134304, #135556, #134916, #135457, #135948, #136568, #135720, #134409. (#135786, #135951, #134218, #134473, #135118, #135584, #135112, #135508, #136012, #136569, #136603, #136602, #136646, #136647, #136648, #136649, #136650, #136609, #135722, #134413) @fuller-stack-dev, @goslingmanagment, @shakkernerd, @gaoanze888, @obviyus, @itsuzef, @Patrick-Erichsen, and @vyctorbrzezowski</li>
-    <li>**Control UI sessions and boards:** pinned sessions show a filled neutral pin without repeating titles, group titles stay on one marquee line, question sessions stay on one line, rewind hides while the agent works, task reviews fill the side panel, tall task progress scrolls, board widgets replace on put and Remove matches its menu, Workboard task links recover after cursor rejection, and free-text questions are separated from optionless ones. Related #134647, #135705, #134477. (#134775, #134651, #135523, #136606, #135521, #135926, #134517, #135748, #136637, #136619, #134598, #135524, #136607, #136614, #136527, #136668, #134631, #134732, #134860, #134791, #134653, #134833, #135008, #135681, #135957, #134686, #135724, #136002) @obviyus, @asgeirtj, @VACInc, @teddytennant, @shakkernerd, @goslingmanagment, and @Grynn</li>
-    <li>**Pull request tooling in the Control UI:** an explicitly approved replacement head is recovered, merge receipts finish when main advances, merges invoked from another checkout are recovered, ignored files are preserved, quota failures are distinguished from authentication errors, and GitHub sign-in works when anonymous API quota is exhausted with the CLI preflighted before device authorization. Related #135496, #135335, #134701, #135872, #135028. (#135622, #135396, #134778, #135500, #135657, #135873, #134724, #135301) @obviyus, and @jadabreu</li>
-    <li>**macOS app fixes:** confirmed setup cancellation and onboarding failures are shown clearly with retry actions, misleading AI setup progress is replaced, computer input works after execution, bounded native pipe reads and final drains are centralized, native notifications are cancelled before side effects, and completions are delivered before notification status arrives. Related #134573, #134800, #134621, #136206, #136207, #136208. (#134654, #134756, #135041, #134689, #136214, #135796, #136683) and @wbstrbt</li>
-    <li>**iOS fixes:** assistant text selection survives long press, duplicate replies after a history refresh are gone, and dependency resolution works with WebRTC 152. Related #135217, #135249. (#135430, #135789, #134942) and @nikolaihack</li>
-    <li>**Android fixes:** sends are prevented with auth-unavailable models, credentials are masked with correct secret input behavior, reconnect cleanup stays scoped to its connection, reconnected and queued messages no longer get stuck or reappear after deletion, health is rechecked when Refresh races a queued send, chat choices and live appearance updates are preserved, narrow composers stay readable, the settings conversation keeps its position, and refresh results and progress stay current. Related #135874, #136047, #128926, #136638. (#134884, #136352, #135878, #135961, #136161, #136413, #136173, #135432, #136550, #136643) and @aniruddhaadak80</li>
-    <li>**Installers:** Windows installs tolerate npm stderr warnings, use basic parsing for MinGit downloads, and keep the portable Node extraction fallback; the installer no longer points at a log that does not exist; Docker images install `libgomp1` for managed llama.cpp and build the explicitly selected WhatsApp plugin; and source installs use isolated linking to reduce filesystem churn. Related #134638, #134439, #120659. (#134385, #134412, #135410, #134655, #134532, #120660, #135728) @mohamedelrefaiy, @chelsealong, @henrique-simoes, and @fr-meyer</li>
-    <li>**Plugins:** orphan installs recover without weakening ownership, ambiguous copied plugin paths are rejected, build stamps are ignored in registry freshness, plugin load errors survive retries, complete config errors are reported, the Weixin package compatible with the current SDK is selected, scoped ClawHub specs match in uninstall warnings, optional hook-pack dependencies install, inspection diagnostics and configured policy are preserved, lifecycle-less prepared channel turns run, packaged setup and TSX build artifacts resolve, the persisted registry refreshes when source mounts change, and plugin updates rediscover restored payloads instead of reusing stale cached facts after a reinstall. Related #134321, #136357, #134657, #136046, #136594, #136595, #114020, #135990, #136455, #136456, #136516. (#134590, #136373, #134780, #134874, #93842, #134854, #135749, #136050, #136596, #135179, #135993, #135245, #135820, #134719, #136458, #136517) @obviyus, @abacha, @LiuwqGit, @Dresch63, @RayWangyangMa, @axiom-ncis, @bladin, @teddytennant, @nissl24, @fridaylans2000-art, @jooey, and @ssaade01</li>
-    <li>**Memory:** automatic reindex recovers after concurrent writes, orphaned workspace locks recover after PID reuse, deep consolidation works with explicit ownership, clean transient CLI searches stay off the reindex path, index identity mismatches are attributed, unnecessary full rebuilds are avoided, replies stay responsive during legacy index repair, cache overflow is prevented during forced reindex, embeddings honor the environment proxy and resolve profile auth, and embedded session recall returns the newest history. Related #134332, #134999, #134687, #135459, #135641, #134337, #135414, #136656. (#134333, #135051, #135166, #135520, #135864, #136064, #135062, #135373, #134858, #134744, #135415, #136657, #131329) @obviyus, @pengzh1, @gru-10k, @zhangguiping-xydt, @giangthb, @gaoanze888, @LifeViwer, @yetval, @CjTruHeart, @ThatGuySizemore, @Artemeey, @0x-Parzival, and @hartmark</li>
-    <li>**Model harness selection:** model selections without an activatable harness are rejected with the reason explained, utility completions route through the selected runtime, scheduled model aliases stay scoped to the selected agent, `models status` skips refresh with a matching agent directory override, harness policy reasons are preserved, and the Claude subprocess keeps its failure diagnostics. Related #134305, #134304, #135566, #134690. (#134837, #135118, #135711, #135069, #134862, #135206, #134794) and @goslingmanagment</li>
-    <li>**Providers and CLIs on PATH:** claude-cli connects through PATH shims, Windows bare commands resolve through PATHEXT with empty entries dropped, native Claude login is preserved for blank node-host credentials, the CLI-backend run honors the fallback delegation gate, Responses continuations survive admitted tool arguments and exclude tools from the request-equality check, zai honors `thinkingLevelMap`, DeepInfra refreshes estimates from native pricing, Model Studio cache defaults are honored, Bedrock rejects malformed embedding encodings, and OpenCode Go sends the required User-Agent. Related #135013, #134960, #134709, #135538. (#135124, #135138, #135807, #134932, #115405, #134423, #132951, #132697, #134893, #135093, #133716, #135588) @obviyus, @masatokawano, @gaoanze888, @Vasanthdev2004, @teddytennant, @MertBasar0, @hartmark, @wangjx-xydt, @RileyJJY, and @VACInc</li>
-    <li>**Local models:** llama.cpp context-size-exceeded is treated as overflow, managed release archives extract safely, managed server inspection responses are bounded, and local providers are stopped before Gateway shutdown. Related #133860, #134649. (#133888, #129035, #132490, #134890) @cursoragent, @Areson, @pgondhi987, @RileyJJY, @MoerAI, @obviyus, and @Deregtx</li>
-    <li>**MCP and tools:** OAuth-authenticated MCP requests carry a Content-Length, MCP runtimes are not evicted during requester resolution, MCP lint finishes when SQLite is busy, `agents_wait` deadlines stay monotonic, approval grant lifetimes are validated, terminal summaries release after nested calls settle, and tool-loop warnings are bucketed. Related #136204, #134605. (#136234, #134819, #134698, #135292, #133806, #135398, #135103) @obviyus, @Volevanius, @qingminglong, and @pfrederiksen</li>
-    <li>**Browser tool:** tab enumeration has its own budget separate from the CDP handshake timeout, messages are no longer interrupted during startup recovery, standalone routing errors and cropped screenshots are avoided, native action cancellation is isolated by page, and stale group updates no longer revoke valid commands. Related #132452, #136464, #135176. (#135219, #135016, #135315, #136465, #135186) @obviyus, @alexph-dev, @jesse-merhi, and @rwinkelman</li>
-    <li>**Nodes and devices:** the `openclaw node` worker exits after a stop even with stdin held open, same-install CLI nodes are classified correctly, ambiguity between current node clients is preserved, recently connected nodes stay in list age filters, remote exec hides without an executable node, node wakes retry after clock rollback, presence expires after rollback and stays bounded, and the rejected setup-code warning is clarified. Related #135661, #136593, #136635, #135914. (#135665, #136604, #136636, #135936, #136067, #133354, #134737, #134740, #134795, #136654) @obviyus, @qingminglong, @lzhan011, @0x-Parzival, and @eleqtrizit</li>
-    <li>**Gateway networking:** SSH tunnel stop awaits process reaping, probe tunnels are abortable and handle SIGINT/SIGTERM, listener timeouts ignore clock skew, long temp paths no longer break desktop tunnels, socat forwards that name OpenClaw are distinguished, the tailscale sudo fallback names the operator fix, Accept media-range precedence is honored, invalid `utcOffset` values are rejected, and usage peak hours survive daylight saving. Related #127457, #127591, #135706, #124567. (#133847, #135182, #135281, #135456, #133381, #135825, #118197, #124568, #135153, #125378) @obviyus, @xialonglee, @ly85206559, @ericcaiwx-star, @cursoragent, @pengzh1, @ezimerman, @peterolkhov, @zyw02, @qdivan, and @tzlwn1</li>
-    </ul>
-  </div>
-  <!-- RELEASE_END -->
-  <p style="margin-top:2rem">
-    <a href="https://github.com/openclaw/openclaw/releases" class="btn btn-ghost" style="display:inline-flex">All Releases</a>
-  </p>
-</div>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ FOOTER ═══════════════ -->
-<footer>
-  <div class="tagline">Three agents. One APK. Your pocket.</div>
-  <div class="sub">They leaked Claude Code. We put it on a phone.</div>
-  <div class="links">
-    <a href="https://github.com/friuns2/openclaw-android-assistant">GitHub</a>
-    <a href="https://github.com/friuns2/openclaw-android-assistant/releases/latest/download/app-prod-release.apk">Download</a>
-    <a href="https://play.google.com/store/apps/details?id=gptos.intelligence.assistant&hl=en">Google Play</a>
-    <a href="https://openclaw.ai">OpenClaw</a>
-    <a href="https://claw-code.codes">Claw Code</a>
-    <a href="https://github.com/openai/codex">Codex CLI</a>
-  </div>
-</footer>
-
 </body>
 </html>
