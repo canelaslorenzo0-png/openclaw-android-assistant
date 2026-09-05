@@ -1049,8 +1049,7 @@ H3
                     }
                   }
                 }
-                """.trimIndent().trim() + "
-",
+                """.trimIndent().trim() + "\n",
             )
         }
         Log.i(TAG, "Providers config ensured at ${dir.absolutePath}/providers.json")
