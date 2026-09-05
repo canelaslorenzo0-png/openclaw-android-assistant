@@ -975,6 +975,87 @@ H3
         return true
     }
 
+    fun isHarnessInstalled(): Boolean {
+        val paths = BootstrapInstaller.getPaths(context)
+        val prefix = paths.prefixDir
+        val dsh = File(prefix, "lib/node_modules/@deepseek-ai/dsh/package.json")
+        val dshAlt = File(prefix, "lib/node_modules/deepseek-harness/package.json")
+        val claw = File(prefix, "bin/claw")
+        return dsh.exists() || dshAlt.exists() || claw.exists()
+    }
+
+    fun installHarnesses(onProgress: (String) -> Unit): Boolean {
+        val paths = BootstrapInstaller.getPaths(context)
+        val prefix = paths.prefixDir
+        val npmCli = "$prefix/lib/node_modules/npm/bin/npm-cli.js"
+        var ok = true
+
+        onProgress("Installing DeepSeek Harness (dsh)…")
+        val dshCode = runInPrefix(
+            "node $npmCli install -g @deepseek-ai/dsh 2>&1 || " +
+                "node $npmCli install -g deepseek-harness 2>&1",
+            onOutput = { onProgress(it) },
+        )
+        if (dshCode != 0) {
+            Log.w(TAG, "DeepSeek Harness install failed with code $dshCode (continuing)")
+            ok = false
+        }
+
+        onProgress("Checking Rust for claw-code…")
+        val rust = runCapture("${prefix}/bin/sh -c 'command -v cargo || echo no-cargo' 2>&1").trim()
+        if (rust.contains("cargo")) {
+            onProgress("Installing Claw Code (cargo install)…")
+            val clawCode = runInPrefix(
+                "cargo install --git https://github.com/ultraworkers/claw-code --root $prefix 2>&1 || true",
+                onOutput = { onProgress(it) },
+            )
+            if (clawCode != 0) ok = false
+        } else {
+            onProgress("Rust not available yet — claw-code will be available after first boot")
+            ok = false
+        }
+
+        return ok
+    }
+
+    fun ensureProvidersConfig() {
+        val paths = BootstrapInstaller.getPaths(context)
+        val home = paths.homeDir
+        val dir = File(home, ".mezchaju")
+        dir.mkdirs()
+        val providers = File(dir, "providers.json")
+        if (!providers.exists()) {
+            providers.writeText(
+                """
+                {
+                  "providers": {
+                    "opencodezen": {
+                      "label": "OpenCodeZen",
+                      "baseUrl": "https://api.opencodezen.ai/v1",
+                      "models": ["free"],
+                      "apiKeyEnv": "OPENCODEZEN_API_KEY"
+                    },
+                    "openrouter": {
+                      "label": "OpenRouter",
+                      "baseUrl": "https://openrouter.ai/api/v1",
+                      "models": ["free"],
+                      "apiKeyEnv": "OPENROUTER_API_KEY"
+                    },
+                    "xkiro": {
+                      "label": "Xkiro",
+                      "baseUrl": "https://api.xkiro.com/v1",
+                      "models": ["free"],
+                      "apiKeyEnv": "XKIRO_API_KEY"
+                    }
+                  }
+                }
+                """.trimIndent().trim() + "
+",
+            )
+        }
+        Log.i(TAG, "Providers config ensured at ${dir.absolutePath}/providers.json")
+    }
+
     fun installCodex(onProgress: (String) -> Unit): Boolean {
         val paths = BootstrapInstaller.getPaths(context)
         val prefix = paths.prefixDir

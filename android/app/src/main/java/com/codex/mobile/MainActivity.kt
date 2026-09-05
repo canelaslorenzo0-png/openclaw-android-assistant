@@ -185,34 +185,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Step 3: Install Codex CLI
-        if (!serverManager.isCodexInstalled()) {
-            updateStatus("Installing Codex CLI…", "This may take a few minutes")
-            val codexOk = serverManager.installCodex { msg -> updateDetail(msg) }
-            if (!codexOk) {
-                throw RuntimeException("Failed to install Codex")
+        // Step 3: Install agent harnesses (DeepSeek Harness + Claw Code)
+        if (!serverManager.isHarnessInstalled()) {
+            updateStatus("Installing agent harnesses…", "This may take a few minutes")
+            val harnessOk = serverManager.installHarnesses { msg -> updateDetail(msg) }
+            if (!harnessOk) {
+                Log.w(TAG, "Harness install incomplete — continuing")
             }
         }
-
-        // Ensure codex wrapper script exists
-        serverManager.ensureCodexWrapperScript()
+        updateStatus("Harnesses ready")
 
         // Step 3a: Extract web UI from APK assets (every launch)
         updateStatus("Updating web UI…")
         serverManager.installServerBundle { msg -> updateDetail(msg) }
 
-        // Step 3b: Install native platform binary
+        // Step 3b: Install native platform binary (legacy Codex, optional)
         if (!serverManager.isPlatformBinaryInstalled()) {
-            updateStatus("Installing Codex platform binary…")
-            val binOk = serverManager.installPlatformBinary { msg -> updateDetail(msg) }
-            if (!binOk) {
-                throw RuntimeException("Failed to install Codex platform binary")
-            }
+            updateStatus("Installing optional Codex platform binary…")
+            serverManager.installPlatformBinary { msg -> updateDetail(msg) }
         }
-        updateStatus("Codex ready")
+        updateStatus("Runtime ready")
 
-        // Step 3c: Write full-access config and create default workspace
+        // Step 3c: Write full-access config, provider config and default workspace
         serverManager.ensureFullAccessConfig()
+        serverManager.ensureProvidersConfig()
         serverManager.ensureDefaultWorkspace()
 
         // Step 4: Start CONNECT proxy (needed for native binary DNS/TLS)
@@ -221,41 +217,10 @@ class MainActivity : AppCompatActivity() {
             throw RuntimeException("Failed to start network proxy")
         }
 
-        // Step 5: Authenticate via `codex login`
-        updateStatus("Checking authentication…")
-        if (!serverManager.isLoggedIn()) {
-            updateStatus("Login required — opening browser…")
-            val authOk = serverManager.loginWithUrl(
-                onLoginUrl = { url ->
-                    runOnUiThread {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    }
-                },
-                onProgress = { msg -> updateDetail(msg) },
-            )
-            if (!authOk && !serverManager.isLoggedIn()) {
-                updateStatus("Browser login failed — enter API key manually")
-                val apiKey = requestApiKey()
-                if (apiKey.isBlank()) {
-                    throw RuntimeException("No API key provided")
-                }
-                val loginOk = serverManager.loginWithApiKey(apiKey)
-                if (!loginOk) {
-                    throw RuntimeException("Login failed — check your API key")
-                }
-            }
-        }
-        updateStatus("Authenticated")
+        // Step 5: No forced login — providers are configured in the web UI
+        updateStatus("Providers ready (OpenCodeZen, OpenRouter, Xkiro)")
 
-        // Step 6: Health check
-        updateStatus("Verifying API access…", "Sending test message")
-        val healthOk = serverManager.healthCheck { msg -> updateDetail(msg) }
-        if (!healthOk) {
-            throw RuntimeException("API health check failed — Codex could not reach OpenAI")
-        }
-        updateStatus("API verified")
-
-        // Step 7: Configure and start OpenClaw
+        // Step 6: Configure and start OpenClaw
         if (serverManager.isOpenClawInstalled()) {
             updateStatus("Configuring OpenClaw…")
             serverManager.configureOpenClawAuth()

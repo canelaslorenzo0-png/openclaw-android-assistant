@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦞 AnyClaw
+# 🦞 Mezchaju
 
 ### 🚀 OpenClaw + Codex + Claude Code — Running Natively on Android 🚀
 
@@ -15,7 +15,7 @@
 <br />
 
 > **Three AI coding agents. One APK. Your pocket.**
-> **OpenClaw gateway + OpenAI Codex CLI + Claude Code (via Claw Code / OpenClaude)**
+> **OpenClaw gateway + DeepSeek Harness + Claw Code on Android**
 > **— all running in a full Linux environment on your Android phone.**
 
 <br />
@@ -57,7 +57,7 @@ All three run inside an embedded Linux environment extracted from the APK. No ro
 
 In March 2026, Anthropic's Claude Code had its [full source code accidentally leaked](https://claw-code.codes/source-leak-timeline) via an npm source map. The community built [Claw Code](https://github.com/instructkr/claw-code) — a clean-room rewrite that hit 48K+ stars in hours. It was later rebranded as **OpenClaude**.
 
-**We ported it to Android.** It now runs inside AnyClaw alongside OpenClaw and Codex:
+**We ported it to Android.** It now runs inside Mezchaju alongside OpenClaw and Codex:
 
 | | What | Description |
 |---|---|---|

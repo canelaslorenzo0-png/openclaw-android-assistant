@@ -64,13 +64,13 @@ jobs:
         run: |
           RELEASE_DIR=android/app/build/outputs/apk/release
           APK=$(find "$RELEASE_DIR" -maxdepth 1 -name "*.apk" | head -n 1)
-          mv "$APK" "$RELEASE_DIR/anyclaw-v1.0.0.apk"
+          mv "$APK" "$RELEASE_DIR/mezchaju-v1.1.0.apk"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: anyclaw-release
-          path: android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
+          name: mezchaju-release
+          path: android/app/build/outputs/apk/release/mezchaju-v1.1.0.apk
 
       - name: Generate changelog
         if: github.ref_type == 'branch'
@@ -93,9 +93,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
-          name: "AnyClaw v${{ github.run_number }} (${{ github.ref_name }})"
+          name: "Mezchaju v${{ github.run_number }} (${{ github.ref_name }})"
           body: |
-            🦞 **AnyClaw** — OpenClaw + Codex on Android
+            🦞 **Mezchaju** — OpenClaw + DeepSeek Harness + Claw Code on Android
 
             📱 Install the APK on any ARM64 Android 7.0+ device. No root required.
 
@@ -105,6 +105,6 @@ jobs:
             ---
             Branch: ${{ github.ref_name }}
             Built from commit ${{ github.sha }}
-          files: android/app/build/outputs/apk/release/anyclaw-v1.0.0.apk
+          files: android/app/build/outputs/apk/release/mezchaju-v1.1.0.apk
           draft: false
           prerelease: false
