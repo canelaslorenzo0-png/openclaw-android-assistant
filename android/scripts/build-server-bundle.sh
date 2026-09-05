@@ -15,12 +15,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ANDROID_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT_ROOT="$(dirname "$ANDROID_DIR")"
+WEB_ROOT="$PROJECT_ROOT/openclaw-android"
 
 ASSETS_DIR="$ANDROID_DIR/app/src/main/assets/server-bundle"
 
 echo "=== Building codex-web-local ==="
 
-cd "$PROJECT_ROOT"
+cd "$WEB_ROOT"
 
 # Install dependencies if needed
 if [ ! -d "node_modules" ]; then
@@ -41,15 +42,21 @@ rm -rf "$ASSETS_DIR"
 mkdir -p "$ASSETS_DIR/dist"
 mkdir -p "$ASSETS_DIR/dist-cli"
 
-cp -r "$PROJECT_ROOT/dist/"* "$ASSETS_DIR/dist/"
-cp -r "$PROJECT_ROOT/dist-cli/"* "$ASSETS_DIR/dist-cli/"
-cp "$PROJECT_ROOT/package.json" "$ASSETS_DIR/package.json"
+cp -r "$WEB_ROOT/dist/"* "$ASSETS_DIR/dist/"
+cp -r "$WEB_ROOT/dist-cli/"* "$ASSETS_DIR/dist-cli/"
+cp "$WEB_ROOT/package.json" "$ASSETS_DIR/package.json"
+
+# Refresh the app's embedded web assets (WebView fallback UI)
+echo "Refreshing embedded web assets..."
+rm -rf "$ANDROID_DIR/app/src/main/assets/web"
+mkdir -p "$ANDROID_DIR/app/src/main/assets/web"
+cp -r "$WEB_ROOT/dist/"* "$ANDROID_DIR/app/src/main/assets/web/"
 
 # Install production dependencies into the bundle
 echo "Installing production dependencies for bundle..."
 cd "$ASSETS_DIR"
 npm install --omit=dev --ignore-scripts 2>/dev/null || true
-cd "$PROJECT_ROOT"
+cd "$WEB_ROOT"
 
 echo ""
 echo "=== Server bundle ready ==="
