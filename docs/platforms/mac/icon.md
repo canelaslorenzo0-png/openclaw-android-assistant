@@ -9,8 +9,6 @@ title: "Menu bar icon"
 
 Scope: macOS app (`apps/macos`). Rendering: `CritterIconRenderer.makeIcon(...)`. Animation/state wiring: `CritterStatusLabel` + `CritterStatusLabel+Behavior.swift`.
 
-<<<<<<< HEAD
-=======
 ## Dock icon
 
 Choose a Dock icon in **Settings → General → Dock icon**:
@@ -42,7 +40,6 @@ Original's source is `apps/macos/Icon.icon`; other vector designs are in
 backgrounds and monochrome foreground colors, and Apple's asset compiler supplies the macOS mask and padding.
 Packaging also compiles the primary Icon Composer document for native styling.
 
->>>>>>> upstream/main
 ## States
 
 | State                 | Trigger                                   | Visual                                                                                              |
