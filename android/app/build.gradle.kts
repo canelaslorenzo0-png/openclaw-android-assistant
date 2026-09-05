@@ -38,6 +38,12 @@ android {
         jvmTarget = "17"
     }
 
+    lint {
+        // targetSdk 28 is an intentional workaround (W^X / executing binaries
+        // from app data); not eligible for Play review, so don't fail on it.
+        disable += "ExpiredTargetSdkVersion"
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
